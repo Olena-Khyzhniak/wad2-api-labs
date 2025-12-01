@@ -3,20 +3,31 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const TaskSchema = new Schema({
+
   title:  { type: String, required: true },
   description:  String ,
   deadline: Date,
   done: Boolean,
   priority: { type: String, enum: ["Low", "Medium", "High"], required: true },
-  created_at: Date,
-  updated_at: Date
+   created_at: Date,
+  updated_at: Date,
+    userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+}
 });
 
 
-const dateValidator = (date) => {
-  return date > new Date();
-};
-TaskSchema.path("deadline").validate(dateValidator);
 
+// const dateValid
+// ator = (date) => {
+//   return date > new Date();
+// };
+// TaskSchema.path("deadline").validate(dateValidator);
+
+
+TaskSchema.path('deadline').validate(function(value) {
+  return value > new Date();
+}, 'Deadline must be a future date.');
 
 export default mongoose.model('Task', TaskSchema);
